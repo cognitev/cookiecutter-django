@@ -55,15 +55,6 @@ def remove_pycharm_files():
     if os.path.exists(docs_dir_path):
         shutil.rmtree(docs_dir_path)
 
-
-def remove_docker_files():
-    shutil.rmtree("compose")
-
-    file_names = ["local.yml", "production.yml", ".dockerignore"]
-    for file_name in file_names:
-        os.remove(file_name)
-
-
 def remove_utility_files():
     shutil.rmtree("utility")
 
@@ -240,10 +231,10 @@ def set_flags_in_envs(
     set_django_secret_key(production_django_envs_path)
     set_django_admin_url(production_django_envs_path)
 
-    set_postgres_user(local_postgres_envs_path, value=postgres_user)
-    set_postgres_password(local_postgres_envs_path, value=DEBUG_VALUE if debug else None)
-    set_postgres_user(production_postgres_envs_path, value=postgres_user)
-    set_postgres_password(production_postgres_envs_path, value=DEBUG_VALUE if debug else None)
+    # set_postgres_user(local_postgres_envs_path, value=postgres_user)
+    # set_postgres_password(local_postgres_envs_path, value=DEBUG_VALUE if debug else None)
+    # set_postgres_user(production_postgres_envs_path, value=postgres_user)
+    # set_postgres_password(production_postgres_envs_path, value=DEBUG_VALUE if debug else None)
 
     set_celery_flower_user(local_django_envs_path, value=celery_flower_user)
     set_celery_flower_password(local_django_envs_path, value=DEBUG_VALUE if debug else None)
@@ -284,17 +275,11 @@ def main():
     if "{{ cookiecutter.use_pycharm }}".lower() == "n":
         remove_pycharm_files()
 
-    if "{{ cookiecutter.use_docker }}".lower() == "y":
-        remove_utility_files()
-    else:
-        remove_docker_files()
-
     if "{{ cookiecutter.use_heroku }}".lower() == "n":
         remove_heroku_files()
 
     if (
-        "{{ cookiecutter.use_docker }}".lower() == "n"
-        and "{{ cookiecutter.use_heroku }}".lower() == "n"
+        "{{ cookiecutter.use_heroku }}".lower() == "n"
     ):
         if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
             print(
@@ -312,26 +297,9 @@ def main():
     if "{{ cookiecutter.js_task_runner}}".lower() == "none":
         remove_gulp_files()
         remove_packagejson_file()
-    if (
-        "{{ cookiecutter.js_task_runner }}".lower() != "none"
-        and "{{ cookiecutter.use_docker }}".lower() == "y"
-    ):
-        print(
-            WARNING
-            + "Docker and {} JS task runner ".format(
-                "{{ cookiecutter.js_task_runner }}".lower().capitalize()
-            )
-            + "working together not supported yet. "
-              "You can continue using the generated project like you "
-              "normally would, however you would need to add a JS "
-              "task runner service to your Docker Compose configuration "
-              "manually." + TERMINATOR
-        )
 
     if "{{ cookiecutter.use_celery }}".lower() == "n":
         remove_celery_app()
-        if "{{ cookiecutter.use_docker }}".lower() == "y":
-            remove_celery_compose_dirs()
 
     if "{{ cookiecutter.use_travisci }}".lower() == "n":
         remove_dottravisyml_file()
