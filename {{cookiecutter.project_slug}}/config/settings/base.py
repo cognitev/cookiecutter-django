@@ -23,10 +23,8 @@ ENV = getenv('ENV', 'development').lower()
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = {
-    'production': eval_bool(getenv('DEBUG'), False),
-    'development': eval_bool(getenv('DEBUG'), True),
-}.get(ENV)
+DEBUG = eval_bool(getenv('DEBUG'), True)
+
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -55,21 +53,7 @@ USE_TZ = True
     DB_HOST,
     DB_PORT,
     TEST_DB_NAME,
-) = {
-    'production': (
-        {% if cookiecutter.use_prometheus == 'y' -%}
-            getenv('DB_ENGINE', 'django_prometheus.db.backends.mysql'),
-        {%  else %}
-            getenv('DB_ENGINE', 'django.db.backends.mysql'),
-        {%- endif %}
-        getenv('DB_NAME'),
-        getenv('DB_USER'),
-        getenv('DB_PASSWORD'),
-        getenv('DB_HOST'),
-        getenv('DB_PORT'),
-        getenv('DB_NAME_TESTS'),
-    ),
-    'development': (
+) = (
         {% if cookiecutter.use_prometheus == 'y' -%}
             getenv('DB_ENGINE', 'django_prometheus.db.backends.mysql'),
         {%  else %}
@@ -82,7 +66,6 @@ USE_TZ = True
         getenv('DB_PORT', '3306'),
         getenv('DB_NAME_TESTS', '{{cookiecutter.project_slug}}_tests'),
     )
-}.get(ENV)
 
 # db
 DATABASES = {
@@ -94,6 +77,8 @@ DATABASES = {
         'HOST': DB_HOST,
         'PORT': DB_PORT,
         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        'ATOMIC_REQUESTS': True,
+        'CONN_MAX_AGE': env.int('CONN_MAX_AGE', default=60),
         'TEST': {
             'NAME': TEST_DB_NAME,
             'CHARSET': 'utf8',
@@ -273,34 +258,19 @@ FIXTURE_DIRS = (
 # to test smtp server in development comment console backend line
 # and start local smtp mail server using the following command:
 # `python -m smtpd -n -c DebuggingServer localhost:1025`
-EMAIL_BACKEND = {
-    'production': 'django.core.mail.backends.smtp.EmailBackend',
-    # 'development': 'django.core.mail.backends.smtp.EmailBackend',
-    # comment this line to use smtp in dev
-    # 'development': 'django.core.mail.backends.console.EmailBackend',
-    # comment this line to use console or smtp in dev
-    'development': 'naomi.mail.backends.naomi.NaomiBackend',
-}.get(ENV)
+EMAIL_BACKEND = 'naomi.mail.backends.naomi.NaomiBackend'
 
 (
     EMAIL_HOST,
     EMAIL_PORT,
     EMAIL_HOST_USER,
     EMAIL_HOST_PASSWORD,
-) = {
-    'production': (
-        getenv('EMAIL_HOST'),
-        getenv('EMAIL_PORT'),
-        getenv('EMAIL_HOST_USER'),
-        getenv('EMAIL_HOST_PASSWORD'),
-    ),
-    'development': (
+) = (
         'localhost',
         '1025',
         '',
         '',
     )
-}.get(ENV)
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -329,16 +299,7 @@ if USE_TZ:
     CELERY_TASK_SERIALIZER,
     CELERY_RESULT_SERIALIZER,
     CELERY_IGNORE_RESULT,
-) = {
-    "production": (
-        getenv('CELERY_BROKER_URL'),
-        getenv('CELERY_RESULT_BACKEND', 'django-db'),
-        getenv('CELERY_ACCEPT_CONTENT', ['json']),
-        getenv('CELERY_TASK_SERIALIZER', 'json'),
-        getenv('CELERY_RESULT_SERIALIZER', 'json'),
-        getenv('CELERY_IGNORE_RESULT', False),
-    ),
-    "development": (
+) = (
         getenv('CELERY_BROKER_URL', 'redis://localhost:6379/1'),
         getenv('CELERY_RESULT_BACKEND', 'django-db'),
         getenv('CELERY_ACCEPT_CONTENT', ['json']),
@@ -346,7 +307,6 @@ if USE_TZ:
         getenv('CELERY_RESULT_SERIALIZER', 'json'),
         getenv('CELERY_IGNORE_RESULT', False),
     )
-}.get(ENV)
 
 CELERYD_TASK_TIME_LIMIT = 5 * 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit

@@ -4,6 +4,11 @@ import logging
 {% endif -%}
 from .base import *  # noqa
 from .base import env
+from os import getenv
+
+
+def eval_bool(env_value, default=None):
+    return {'true': True, 'false': False}.get(str(env_value).lower(), default)
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -12,11 +17,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{ cookiecutter.domain_name }}'])
 
-# DATABASES
-# ------------------------------------------------------------------------------
-DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
-DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
-DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # noqa F405
+DEBUG = eval_bool(getenv('DEBUG'), True)
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -122,6 +123,20 @@ DEFAULT_FROM_EMAIL = env(
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[{{cookiecutter.project_name}}]')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+(
+    EMAIL_HOST,
+    EMAIL_PORT,
+    EMAIL_HOST_USER,
+    EMAIL_HOST_PASSWORD,
+) = (
+        getenv('EMAIL_HOST'),
+        getenv('EMAIL_PORT'),
+        getenv('EMAIL_HOST_USER'),
+        getenv('EMAIL_HOST_PASSWORD'),
+    )
 
 # ADMIN
 # ------------------------------------------------------------------------------
