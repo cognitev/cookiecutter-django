@@ -231,11 +231,6 @@ def set_flags_in_envs(
     set_django_secret_key(production_django_envs_path)
     set_django_admin_url(production_django_envs_path)
 
-    # set_postgres_user(local_postgres_envs_path, value=postgres_user)
-    # set_postgres_password(local_postgres_envs_path, value=DEBUG_VALUE if debug else None)
-    # set_postgres_user(production_postgres_envs_path, value=postgres_user)
-    # set_postgres_password(production_postgres_envs_path, value=DEBUG_VALUE if debug else None)
-
     set_celery_flower_user(local_django_envs_path, value=celery_flower_user)
     set_celery_flower_password(local_django_envs_path, value=DEBUG_VALUE if debug else None)
     set_celery_flower_user(production_django_envs_path, value=celery_flower_user)
@@ -275,24 +270,16 @@ def main():
     if "{{ cookiecutter.use_pycharm }}".lower() == "n":
         remove_pycharm_files()
 
-    if "{{ cookiecutter.use_heroku }}".lower() == "n":
-        remove_heroku_files()
+    remove_heroku_files()
 
-    if (
-        "{{ cookiecutter.use_heroku }}".lower() == "n"
-    ):
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
-            print(
-                INFO + ".env(s) are only utilized when Docker Compose and/or "
-                       "Heroku support is enabled so keeping them does not "
-                       "make sense given your current setup." + TERMINATOR
-            )
+
+    if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
+        print(
+            INFO + ".env(s) are only utilized when Docker Compose and/or "
+                    "Heroku support is enabled so keeping them does not "
+                    "make sense given your current setup." + TERMINATOR
+        )
         remove_envs_and_associated_files()
-    else:
-        append_to_gitignore_file(".env")
-        append_to_gitignore_file(".envs/*")
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
-            append_to_gitignore_file("!.envs/.local/")
 
     if "{{ cookiecutter.js_task_runner}}".lower() == "none":
         remove_gulp_files()

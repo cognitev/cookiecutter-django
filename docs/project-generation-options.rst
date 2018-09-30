@@ -75,10 +75,6 @@ use_sentry:
 use_whitenoise:
     Indicates whether the project should be configured to use WhiteNoise_.
 
-use_heroku:
-    Indicates whether the project should be configured so as to be deployable
-    to Heroku_.
-
 use_travisci:
     Indicates whether the project should be configured to use `Travis CI`_.
 

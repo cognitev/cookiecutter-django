@@ -124,15 +124,6 @@ Deployment
 ----------
 
 The following details how to deploy this application.
-{% if cookiecutter.use_heroku.lower() == "y" %}
-
-Heroku
-^^^^^^
-
-See detailed `cookiecutter-django Heroku documentation`_.
-
-.. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
-{% endif %}
 
 {% if cookiecutter.custom_bootstrap_compilation == "y" %}
 Custom Bootstrap Compilation

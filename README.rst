@@ -159,13 +159,12 @@ Answer the prompts with your own desired options_. For example::
     domain_name [example.com]: myreddit.com
     version [0.1.0]: 0.0.1
     timezone [UTC]: America/Los_Angeles
-    use_whitenoise [n]: n
+    use_whitenoise [y]: y
     use_celery [y]: y
     use_mailhog [n]: n
     use_sentry [y]: y
     use_pycharm [n]: y
     windows [n]: n
-    use_heroku [n]: y
     use_compressor [n]: y
     use_newrelic [y]: y
     use_prometheus [y]: y
