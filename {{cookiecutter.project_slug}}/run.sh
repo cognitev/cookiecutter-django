@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 set -e
 export NEW_RELIC_CONFIG_FILE=$(/usr/local/bin/envconsul  -consul consul.mcagrid.com -token $CONSUL_TOKEN -prefix $DEPLOY_ENV/ env | grep ^NEW_RELIC_CONFIG_FILE= | cut -d = -f2 | awk '{print $1 }')
 
@@ -34,3 +34,4 @@ elif [ "$1" = "worker" ]; then
     /usr/local/bin/envconsul -consul consul.mcagrid.com -token $CONSUL_TOKEN -prefix $DEPLOY_ENV/ \
       newrelic-admin run-program celery worker -A walla --loglevel=INFO -Q {{ cookiecutter.project_slug }}
   fi
+fi

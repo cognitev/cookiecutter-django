@@ -182,7 +182,7 @@ Answer the prompts with your own desired options_. For example::
     5 - Not open source
     Choose from 1, 2, 3, 4, 5 [1]: 1
     keep_local_envs_in_vcs [y]: y
-    debug[n]: n
+    debug[y]: y
 
 Enter the project and take a look around::
 

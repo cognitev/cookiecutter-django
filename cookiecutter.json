@@ -30,6 +30,5 @@
   "use_whitenoise": "y",
   "use_travisci": "n",
   "keep_local_envs_in_vcs": "y",
-
-  "debug": "n"
+  "debug": "y"
 }

@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 
 import environ
 from os import getenv
+import dj_database_url
 
 ROOT_DIR = environ.Path(__file__) - 3  # ({{ cookiecutter.project_slug }}/config/settings/base.py - 3 = {{ cookiecutter.project_slug }}/)
 APPS_DIR = ROOT_DIR.path('{{ cookiecutter.project_slug }}')
@@ -45,47 +46,26 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-(
-    DB_ENGINE,
-    DB_NAME,
-    DB_USER,
-    DB_PASSWORD,
-    DB_HOST,
-    DB_PORT,
-    TEST_DB_NAME,
-) = (
-        {% if cookiecutter.use_prometheus == 'y' -%}
-            getenv('DB_ENGINE', 'django_prometheus.db.backends.mysql'),
-        {%  else %}
-            getenv('DB_ENGINE', 'django.db.backends.mysql'),
-        {%- endif %}
-        getenv('DB_NAME', '{{cookiecutter.project_slug}}'),
-        getenv('DB_USER', 'root'),
-        getenv('DB_PASSWORD', ''),
-        getenv('DB_HOST', '127.0.0.1'),
-        getenv('DB_PORT', '3306'),
-        getenv('DB_NAME_TESTS', '{{cookiecutter.project_slug}}_tests'),
-    )
+DB_NAME = getenv('DB_NAME', '{{ cookiecutter.project_slug }}')
+DB_USER = getenv('DB_USER', 'root')
+DB_PASSWORD = getenv('DB_PASSWORD', '')
+DB_HOST = getenv('DB_HOST', '127.0.0.1')
+DB_PORT = getenv('DB_PORT', '3306')
+DB_URL = getenv('DB_URL',
+                    'mysql://' + DB_USER + ':' + DB_PASSWORD + '@' +
+                    DB_HOST + ':' + DB_PORT + '/' + DB_NAME)
 
-# db
 DATABASES = {
-    'default': {
-        'ENGINE': DB_ENGINE,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
-        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        'ATOMIC_REQUESTS': True,
-        'CONN_MAX_AGE': env.int('CONN_MAX_AGE', default=60),
-        'TEST': {
-            'NAME': TEST_DB_NAME,
-            'CHARSET': 'utf8',
-            'COLLATION': 'utf8_general_ci',
-        },
-    }
+    'default': dj_database_url.config(
+        default=DB_URL,
+        conn_max_age=int(getenv('DB_CONN_MAX_AGE', 600)),
+    )
 }
+
+{% if cookiecutter.use_prometheus == 'y' -%}
+DB_ENGINE = getenv('DB_ENGINE', 'django_prometheus.db.backends.mysql')
+DATABASES['default']['ENGINE'] = DB_ENGINE
+{%- endif %}
 
 # URLS
 # ------------------------------------------------------------------------------
