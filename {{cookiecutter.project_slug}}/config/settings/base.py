@@ -62,10 +62,13 @@ DATABASES = {
     )
 }
 
+DATABASES['default']['OPTIONS'] = {'connect_timeout': 3}
+
 {% if cookiecutter.use_prometheus == 'y' -%}
 DB_ENGINE = getenv('DB_ENGINE', 'django_prometheus.db.backends.mysql')
 DATABASES['default']['ENGINE'] = DB_ENGINE
 {%- endif %}
+
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -152,9 +155,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    'middlewares.health_check_middleware.HealthCheckMiddleware',
     {% if cookiecutter.use_prometheus == 'y' -%}
         'django_prometheus.middleware.PrometheusBeforeMiddleware',
-    {% endif %}
+    {%- endif %}
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -164,7 +168,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     {% if cookiecutter.use_prometheus == 'y' -%}
         'django_prometheus.middleware.PrometheusAfterMiddleware',
-    {% endif %}
+    {%- endif %}
 ]
 
 # STATIC

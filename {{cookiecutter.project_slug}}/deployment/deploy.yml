@@ -68,6 +68,18 @@ spec:
         volumeMounts:
         - name: tz-config
           mountPath: /etc/localtime
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 5
       volumes:
         - name: tz-config
           hostPath:
