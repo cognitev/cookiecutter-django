@@ -6,7 +6,7 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='!!!SET DJANGO_SECRET_KEY!!!')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='!!!SET DJANGO_SECRET_KEY!!!') # noqa
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [
     "localhost",
@@ -31,15 +31,15 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa F405
 
 # EMAIL
 # ------------------------------------------------------------------------------
-{%- if cookiecutter.use_mailhog == 'y' -%}
+{% if cookiecutter.use_mailhog == 'y' %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = 'localhost'
-{%- else -%}
+{% else %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = 'localhost'
-{%- endif %}
+{% endif %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
 

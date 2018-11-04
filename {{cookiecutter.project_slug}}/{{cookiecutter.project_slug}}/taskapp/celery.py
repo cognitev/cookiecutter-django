@@ -42,7 +42,6 @@ class CeleryAppConfig(AppConfig):
 {% if cookiecutter.use_pycharm == 'y' -%}
             # @formatter:on
 {%- endif %}
-
             raven_client = RavenClient(dsn=settings.RAVEN_CONFIG['dsn'])
             raven_register_logger_signal(raven_client)
             raven_register_signal(raven_client)

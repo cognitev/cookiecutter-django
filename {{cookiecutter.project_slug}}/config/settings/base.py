@@ -6,13 +6,15 @@ import environ
 from os import getenv
 import dj_database_url
 
-ROOT_DIR = environ.Path(__file__) - 3  # ({{ cookiecutter.project_slug }}/config/settings/base.py - 3 = {{ cookiecutter.project_slug }}/)
+ROOT_DIR = environ.Path(__file__) - 3  # ({{ cookiecutter.project_slug }}/config/settings/base.py - 3 = {{ cookiecutter.project_slug }}/) # noqa
 APPS_DIR = ROOT_DIR.path('{{ cookiecutter.project_slug }}')
 
 env = environ.Env()
 
+
 def eval_bool(env_value, default=None):
     return {'true': True, 'false': False}.get(str(env_value).lower(), default)
+
 
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
 if READ_DOT_ENV_FILE:
@@ -52,8 +54,8 @@ DB_PASSWORD = getenv('DB_PASSWORD', '')
 DB_HOST = getenv('DB_HOST', '127.0.0.1')
 DB_PORT = getenv('DB_PORT', '3306')
 DB_URL = getenv('DB_URL',
-                    'mysql://' + DB_USER + ':' + DB_PASSWORD + '@' +
-                    DB_HOST + ':' + DB_PORT + '/' + DB_NAME)
+                'mysql://' + DB_USER + ':' + DB_PASSWORD + '@' + # noqa
+                DB_HOST + ':' + DB_PORT + '/' + DB_NAME)
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -250,11 +252,11 @@ EMAIL_BACKEND = 'naomi.mail.backends.naomi.NaomiBackend'
     EMAIL_HOST_USER,
     EMAIL_HOST_PASSWORD,
 ) = (
-        'localhost',
-        '1025',
-        '',
-        '',
-    )
+    'localhost',
+    '1025',
+    '',
+    '',
+)
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -284,13 +286,13 @@ if USE_TZ:
     CELERY_RESULT_SERIALIZER,
     CELERY_IGNORE_RESULT,
 ) = (
-        getenv('CELERY_BROKER_URL', 'redis://localhost:6379/1'),
-        getenv('CELERY_RESULT_BACKEND', 'django-db'),
-        getenv('CELERY_ACCEPT_CONTENT', ['json']),
-        getenv('CELERY_TASK_SERIALIZER', 'json'),
-        getenv('CELERY_RESULT_SERIALIZER', 'json'),
-        getenv('CELERY_IGNORE_RESULT', False),
-    )
+    getenv('CELERY_BROKER_URL', 'redis://localhost:6379/1'),
+    getenv('CELERY_RESULT_BACKEND', 'django-db'),
+    getenv('CELERY_ACCEPT_CONTENT', ['json']),
+    getenv('CELERY_TASK_SERIALIZER', 'json'),
+    getenv('CELERY_RESULT_SERIALIZER', 'json'),
+    getenv('CELERY_IGNORE_RESULT', False),
+)
 
 CELERYD_TASK_TIME_LIMIT = 5 * 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
@@ -300,7 +302,7 @@ CELERYD_TASK_SOFT_TIME_LIMIT = 60
 {%- endif %}
 
 {% if cookiecutter.use_prometheus == 'y' -%}
-    INSTALLED_APPS+= ['django_prometheus']
+INSTALLED_APPS += ['django_prometheus']
 
 {%- endif %}
 # django-allauth
