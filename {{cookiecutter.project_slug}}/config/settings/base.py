@@ -277,6 +277,7 @@ if USE_TZ:
     # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-timezone
     CELERY_TIMEZONE = TIME_ZONE
 
+REDIS_URL='redis://redis:6379/0'
 # Celery Broker
 (
     CELERY_BROKER_URL,
